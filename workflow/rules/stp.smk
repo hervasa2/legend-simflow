@@ -151,19 +151,11 @@ rule build_tier_stp:
         macro=rules.gen_remage_macro.output,
     params:
         cmd=smk_remage_run,
-        # make this rule dependent on the actual simconfig block it is very
-        # important here to ignore the simconfig fields that, if updated,
-        # should not trigger re-creation of existing files. we ignore then
-        # `number_of_jobs` and in the future we could also ignore
-        # `primaries_per_job`, such that Snakemake will keep the existing stp
-        # files with a different number of primaries on disk. Bonus: we ignore
-        # `geom_config_extra` because that dependency is already tracked by
-        # `input.geom`.
-        _simconfig_hash=lambda wc: mutils.smk_hash_simconfig(
-            config,
-            wc,
-            tier="stp",
-            ignore=["geom_config_extra", "number_of_jobs"],
+        # the only simconfig field used in the remage CLI is primaries_per_job
+        # (→ N_EVENTS substitution); all other fields affect the macro content
+        # and are already tracked via input.macro → gen_remage_macro.
+        primaries_per_job=lambda wc: mutils.get_simconfig(
+            config, "stp", simid=wc.simid, field="primaries_per_job"
         ),
     output:
         patterns.output_simjob_filename(config, tier="stp"),

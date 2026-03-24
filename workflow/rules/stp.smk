@@ -120,7 +120,7 @@ def smk_remage_run(wildcards, input, output, threads):
         geom=input.geom,
         output=output,
         procs=threads,
-        macro_free=True,
+        macro_free=False,
     )
 
 
@@ -142,6 +142,7 @@ rule build_tier_stp:
     input:
         verfile=lambda wc: patterns.vtx_filename_for_stp(config, wc.simid),
         geom=patterns.geom_gdml_filename(config, tier="stp"),
+        macro=rules.gen_remage_macro.output,
     params:
         cmd=smk_remage_run,
         # make this rule dependent on the actual simconfig block it is very

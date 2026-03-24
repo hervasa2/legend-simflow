@@ -109,7 +109,8 @@ def remage_run(
     sim_cfg = get_simconfig(config, tier, simid=simid)
 
     # get macro
-    macro_text, _ = make_remage_macro(config, simid, tier=tier, geom=geom)
+    if macro_free:
+        macro_text, _ = make_remage_macro(config, simid, tier=tier, geom=geom)
 
     # need some modifications if this is a benchmark run
     try:

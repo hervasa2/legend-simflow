@@ -84,6 +84,32 @@ rule build_geom_gdml:
         "legend-pygeom-l200 --verbose --config {input} -- {output} &> {log}"
 
 
+rule gen_remage_macro:
+    """Write the remage macro file for a `stp` tier simulation to disk.
+
+    Renders the macro template for the given `simid` using
+    {func}`legendsimflow.commands.make_remage_macro` and writes it to the
+    canonical macro path under ``generated/macros/``.
+
+    Uses wildcard `simid`.
+    """
+    message:
+        "Generating remage macro for stp.{wildcards.simid}"
+    input:
+        geom=patterns.geom_gdml_filename(config, tier="stp"),
+    params:
+        _simconfig_hash=lambda wc: mutils.smk_hash_simconfig(
+            config,
+            wc,
+            tier="stp",
+            ignore=["geom_config_extra", "number_of_jobs", "primaries_per_job"],
+        ),
+    output:
+        patterns.input_simjob_filename(config, tier="stp"),
+    run:
+        commands.make_remage_macro(config, wildcards.simid, tier="stp", geom=input.geom)
+
+
 def smk_remage_run(wildcards, input, output, threads):
     """Generate the remage command line for use in Snakemake rules."""
     return commands.remage_run(

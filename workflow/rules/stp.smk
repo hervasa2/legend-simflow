@@ -98,6 +98,12 @@ rule gen_remage_macro:
     input:
         geom=patterns.geom_gdml_filename(config, tier="stp"),
     params:
+        # make this rule dependent on the actual simconfig block it is very
+        # important here to ignore the simconfig fields that, if updated,
+        # should not trigger re-creation of existing files. we ignore then
+        # `number_of_jobs` and `primaries_per_job`. Bonus: we ignore
+        # `geom_config_extra` because that dependency is already tracked by
+        # `input.geom`.
         _simconfig_hash=lambda wc: mutils.smk_hash_simconfig(
             config,
             wc,
@@ -160,7 +166,6 @@ rule build_tier_stp:
             ignore=["geom_config_extra", "number_of_jobs"],
         ),
     output:
-        # TODO: protected()
         patterns.output_simjob_filename(config, tier="stp"),
     log:
         patterns.log_filename(config, tier="stp"),

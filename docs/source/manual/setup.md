@@ -28,10 +28,25 @@ Here's a basic description of its fields:
   simulations defined in the metadata.
 - `runlist`: list of LEGEND data taking runs to build pdfs for, in the standard
   format `<experiment>-<period>-<run>-<type>` (e.g. `l200-p03-r000-phy`)
-- `make_steps`: list the workflow steps you would like to run here. This option
-  is useful to speed up the DAG generation and avoid accidentally messing up
-  with other steps. Available steps are: `vtx`, `stp`, `par`, `opt`, `hit`,
-  `evt`, `cvt`.
+- `make_steps`: list the workflow steps to include in the DAG. Only the
+  Snakemake rule files for the listed steps are loaded, so Snakemake will treat
+  outputs of excluded steps as pre-existing source files rather than targets to
+  (re)build. This is the primary mechanism for protecting existing production
+  outputs from accidental re-execution and for speeding up DAG generation.
+  Available steps (in canonical order): `vtx`, `stp`, `par`, `opt`, `hit`,
+  `evt`, `cvt`. If omitted, all steps are included. The order in the list does
+  not matter — steps are always sorted canonically. A few caveats apply:
+  - Steps `vtx` and `par` do not produce simid-scoped outputs and cannot appear
+    as prefixes in `simlist` items.
+  - The `par` step builds the parameters consumed by both `opt` and `hit` (HPGe
+    drift-time maps, current-pulse models, energy-resolution models,
+    run-statistics partitioning files). If `opt` or `hit` is listed without
+    `par`, those parameter files must already exist on disk — otherwise
+    Snakemake will fail at runtime trying to locate them.
+  - When a `simlist` item such as `hit.myid` is specified, the Simflow builds
+    outputs cumulatively for all steps up to `hit` that are present in
+    `make_steps`. Steps not listed are skipped even in the cumulative pass.
+
 - `legend_metadata_version`: optionally specify a revision (anything that
   `git checkout` accepts) for the _legend-metadata_ instance used by the
   simflow. If you are _developing_ metadata, comment this option.

@@ -61,6 +61,58 @@ stp.fibers_Rn222_to_Po214                                33:20:00    100        
 
 Find some useful Snakemake command-line options at the bottom of this page.
 
+## Selective step execution with `make_steps`
+
+The `make_steps` configuration option controls which workflow steps are loaded
+into the Snakemake DAG. Only the rule files for the listed steps are included,
+so outputs of excluded steps are treated as pre-existing source files rather
+than targets — Snakemake will neither build nor invalidate them.
+
+**Running a single step in isolation** is the most common use case. For example,
+to rebuild only the `hit` tier outputs while leaving `stp` files untouched:
+
+```yaml
+make_steps:
+  - hit
+```
+
+or equivalently at the command line:
+
+```console
+> snakemake --config make_steps="[hit]"
+```
+
+**Running contiguous steps** works the same way — just list all the steps you
+need. To run the full parameter and post-processing chain without re-running the
+remage simulations:
+
+```yaml
+make_steps:
+  - par
+  - opt
+  - hit
+  - evt
+  - cvt
+```
+
+:::{warning}
+
+The `par` step builds the parameters consumed by both `opt` and `hit` (HPGe
+drift-time maps, current-pulse models, energy-resolution and A/E models, and
+run-statistics partitioning files). If `opt` or `hit` is included in
+`make_steps` without `par`, those parameter files **must already exist on
+disk**. Omitting `par` is only safe when the parameters have been produced in a
+previous run and have not changed.
+
+:::
+
+:::{note}
+
+`vtx` and `par` cannot be used as step prefixes in `simlist` items (e.g.
+`par.myid` is invalid) because neither step produces simid-scoped output files.
+
+:::
+
 ## Benchmarking runs
 
 This workflow implements the possibility to run special "benchmarking" runs in

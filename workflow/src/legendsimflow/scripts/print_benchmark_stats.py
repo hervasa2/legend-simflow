@@ -24,10 +24,10 @@ from legendsimflow import nersc
 
 
 def round_down_2sf_5(x):
-    k = math.floor(math.log10(x))  # decade
-    m = x / 10**k  # mantissa in [1, 10)
+    k = math.floor(math.log10(x))
+    m = x / 10**k
 
-    m_rd = math.floor(m / 0.5) * 0.5  # steps: 1.0, 1.5, 2.0, 2.5, ...
+    m_rd = round(m / 0.5) * 0.5
     return m_rd * 10**k
 
 

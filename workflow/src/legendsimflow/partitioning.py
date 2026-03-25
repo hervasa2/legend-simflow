@@ -64,6 +64,7 @@ def partition_simstat(
 
     runlist
         list of runs in the form ``<experiment>-<period>-<run>-<datatype>``.
+
     """
     # remaining events per run to allocate across jobs
     remaining_run_events = dict(n_events_part)

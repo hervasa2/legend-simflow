@@ -70,6 +70,7 @@ def get_remage_detector_uids(h5file: str | Path, *, lh5_table: str = "stp") -> d
         Path to remage output file.
     lh5_table
         Name of the LH5 table group to inspect.
+
     """
     if isinstance(h5file, Path):
         h5file = h5file.as_posix()
@@ -102,6 +103,7 @@ def make_output_chunk(chunk: LGDO) -> lgdo.Table:
     Note
     ----
     This function will be moved to :mod:`reboost`.
+
     """
     out = lgdo.Table(size=len(chunk))
 
@@ -132,6 +134,7 @@ def write_chunk(chunk: lgdo.Table, objname: str, outfile: str, objuid: int) -> N
     Note
     ----
     This function will be moved to :mod:`reboost`.
+
     """
     if not Path(outfile).is_file():
         # create the output file
@@ -199,6 +202,7 @@ def load_hpge_dtmaps(
     Note
     ----
     This function will be moved to :mod:`reboost`.
+
     """
     hpge_dtmap_file = patterns.output_dtmap_merged_filename(
         config,
@@ -248,8 +252,8 @@ def get_remage_hit_range(
         `[first, last]` (i.e. `first` included, `last` included) index of
         events of interest present in the remage output file. Only positive
         indices are supported.
-    """
 
+    """
     if (evt_idx_range[0] < 0) or (evt_idx_range[0] < 0):
         msg = "Only positive indices are supported"
         raise ValueError(msg)
@@ -295,6 +299,7 @@ def hpge_corrected_drift_time(
     Note
     ----
     This function will be moved to :mod:`reboost`.
+
     """
     # Convert det_loc to pint Quantity
     det_loc_pint = reboost.units.pg4_to_pint(det_loc)
@@ -348,6 +353,7 @@ def hpge_max_current(
         :func:`reboost.hpge.psd.get_current_template`)
     kwargs
         forwarded to :func:`reboost.hpge.psd.maximum_current`.
+
     """
     # current pulse template domain in ns (step is 1 ns)
     t_domain = {"low": -1000, "high": 4000, "step": 1}
@@ -396,6 +402,7 @@ def _cluster_photoelectrons_flat(
         Clustered amplitudes (sum of amplitudes in each cluster).
     counts
         Number of clusters per original list.
+
     """
     n_lists = offsets.size - 1
     n = t.size
@@ -447,6 +454,7 @@ def _listoffset_chain(
         from outermost to innermost.
     content_numpy_layout
         The final NumpyArray content node.
+
     """
     offsets_chain = []
     node = layout
@@ -511,6 +519,7 @@ def cluster_photoelectrons(
     [[0.0, 1.1, 2.3]]
     >>> ak.to_list(a_out)
     [[3.0, 7.0, 5.0]]
+
     """
     times_p = ak.to_packed(times)
     amps_p = ak.to_packed(amps)

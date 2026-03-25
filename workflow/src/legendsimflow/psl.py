@@ -74,8 +74,8 @@ def build_electronics_response_kernel(
     -------
     rf
         The normalized response kernel
-    """
 
+    """
     # Validate inputs
     if dt <= 0:
         msg = f"dt must be positive, got {dt}"
@@ -148,6 +148,7 @@ def apply_electronics_response(
     -------
     convolved_wfs
         The convolved waveforms as an Awkward Array
+
     """
     n_events = len(wf_array)
     # Reshape kernel for broadcasting (1, Kernel_Length)
@@ -198,8 +199,8 @@ def align_waveforms_to_peak(
         2D array of shifted waveforms
     peak_indices
         1D array containing the original peak index for each current waveform
-    """
 
+    """
     # Convert to NumPy for matrix operations
     wfs = ak.to_numpy(wf_input) if isinstance(wf_input, ak.Array) else wf_input
 
@@ -305,8 +306,8 @@ def make_realistic_pulse_shape_lib(
           reversed relative to Julia due to HDF5 column-/row-major conversion)
         - drift_time_X: 2D array of calculated drift times for angle X
           (shape: [n_r, n_z])
-    """
 
+    """
     _check_pulse_shape_lib_keys(ideal_pulse_shape_lib_obj)
 
     realistic_pulse_shape_lib = {}

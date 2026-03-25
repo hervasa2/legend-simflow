@@ -59,6 +59,7 @@ def get_simconfig(
         Simulation identifier.
     field
         If not ``None``, return the value of this key in the simconfig.
+
     """
     try:
         _m = config.metadata.simprod.config
@@ -102,6 +103,7 @@ def smk_hash_simconfig(
         Exclude these fields from the hash.
     kwargs
         provide a value for wildcards that might not be present in `wildcards`.
+
     """
     tier = kwargs["tier"] if "tier" in kwargs else wildcards.tier  # noqa: SIM401
     simid = kwargs["simid"] if "simid" in kwargs else wildcards.simid  # noqa: SIM401
@@ -136,7 +138,6 @@ def usability(
     default, an error is thrown if no information is found. If `default` is set
     to a non-None value, it will be returned.
     """
-
     rinfo = runinfo(metadata, runid)
     chmap = metadata.channelmap(rinfo.start_key)
     if det_name in chmap and "analysis" in chmap[det_name]:
@@ -187,6 +188,7 @@ def runinfo(metadata: LegendMetadata, runid: str) -> str:
         LEGEND metadata database.
     runid
         a run identifier in the format ``<experiment>-<period>-<run>-<datatype>``.
+
     """
     _, period, run, datatype = re.split(r"\W+", runid)
     return metadata.datasets.runinfo[period][run][datatype]
@@ -199,6 +201,7 @@ def reference_cal_run(metadata: LegendMetadata, runid: str) -> str:
     -------
     This function does not account for dataflow overrides (e.g. calibration
     back-applying)!
+
     """
     exp, period, run, datatype = re.split(r"\W+", runid)
 
@@ -241,6 +244,7 @@ def simpars(metadata: LegendMetadata, par: str, runid: str) -> AttrsDict:
         allowed separators.
     runid
         a run identifier in the format ``<experiment>-<period>-<run>-<datatype>``.
+
     """
     par = par.replace(".", "/")
     datatype = re.split(r"\W+", runid)[-1]
@@ -260,6 +264,7 @@ def get_vtx_simconfig(config: SimflowConfig, simid: str) -> AttrsDict:
         Snakemake config.
     simid
         simulation identifier.
+
     """
     vtx_key = set()
     sconfig = get_simconfig(config, "stp", simid)
@@ -298,7 +303,7 @@ def get_sanitized_fccd(metadata: LegendMetadata, det_name: str) -> float:
 
 
 def is_runid(runid: str) -> bool:
-    """Is a runid (run identifier) correctly formatted?
+    """Whether a runid (run identifier) is correctly formatted.
 
     It should be in the form
     ``l200-<period>-<run>-<datatype>``/``l200-pNN-rMMM-AAA``.
@@ -323,6 +328,7 @@ def query_runlist_db(metadata: LegendMetadata, query: str) -> list[str]:
     query
         expression in the form `<tag>.<datatype>.<period>` (see contents of
         ``runlists.yaml`` in legend-datasets.
+
     """
     group, dtype, period = re.split(r"\W+", query)
 

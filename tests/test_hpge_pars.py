@@ -28,7 +28,6 @@ def test_fit():
 
 
 def test_fit_multi():
-    """Simultaneous fit across several waveforms should converge."""
     t = np.linspace(-1000, 2000, 3001)
     rng = np.random.default_rng(42)
     # Build three waveforms with slightly different amplitudes around a Gaussian
@@ -46,14 +45,11 @@ def test_fit_multi():
 
 
 def test_fit_empty_raises():
-    """fit_currmod must raise ValueError when given an empty list."""
     with pytest.raises(ValueError, match="must not be empty"):
         hpge_pars.fit_currmod([], [])
 
 
 def test_fit_with_current_pulse_model():
-    """fit_currmod should recover known parameters when the input is generated
-    from current_pulse_model itself."""
     t = np.linspace(-1000, 2000, 3001)
     true_pars = [100.0, 0.0, 60.0, 0.6, 100.0, 0.2, 60.0]
     y = current_pulse_model(t, *true_pars)
@@ -70,7 +66,6 @@ def test_fit_with_current_pulse_model():
 
 
 def test_fit_amplitude_scaling():
-    """The fitted height parameter should scale linearly with the waveform amplitude."""
     t = np.linspace(-1000, 2000, 3001)
     y = current_pulse_model(t, 100.0, 0.0, 60.0, 0.6, 100.0, 0.2, 60.0)
 
@@ -144,7 +139,6 @@ def test_get_index(legend_testdata):
 
 
 def test_get_index_max_waveforms(legend_testdata):
-    """max_waveforms should cap the number of returned pairs."""
     ref_path = legend_testdata.get_path("lh5/prod-ref-l200/")
     path = ref_path / Path("generated/tier/hit/cal/p03/r001")
     files = [str(p) for p in path.glob("*")]
@@ -177,7 +171,6 @@ def test_get_index_max_waveforms(legend_testdata):
 
 
 def test_get_index_sorted_by_proximity(legend_testdata):
-    """Returned pairs must be sorted from closest to farthest from the median drift time."""
     ref_path = legend_testdata.get_path("lh5/prod-ref-l200/")
     path = ref_path / Path("generated/tier/hit/cal/p03/r001")
     files = [str(p) for p in path.glob("*")]
@@ -240,7 +233,6 @@ def test_get_waveforms(legend_testdata):
 
 
 def test_get_waveforms_empty():
-    """get_current_pulses with an empty pair list should return two empty lists."""
     times_list, current_list = hpge_pars.get_current_pulses(
         [],
         "ch1084803/raw",
@@ -317,7 +309,6 @@ def test_plot_dt_selection():
 
 
 def test_plot_dt_selection_empty():
-    """plot_dt_selection should not raise with empty arrays."""
     fig, ax = hpge_pars.plot_dt_selection(np.array([]), np.array([]))
     assert isinstance(fig, Figure)
     assert isinstance(ax, Axes)

@@ -30,8 +30,8 @@ def _get_matching_volumes(volume_list: list, patterns: str | list) -> list[str]:
         List of volume names to search.
     patterns
         Single wildcard pattern string or a list of patterns.
-    """
 
+    """
     wildcard_list = [patterns] if isinstance(patterns, str) else patterns
 
     # find all volumes matching at least one pattern
@@ -70,6 +70,7 @@ def get_lar_minishroud_confine_commands(
     Returns
     -------
     A list of confinement commands for remage.
+
     """
     string_list = _get_matching_volumes(list(reg.physicalVolumeDict.keys()), pattern)
 

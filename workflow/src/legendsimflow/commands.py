@@ -101,6 +101,7 @@ def remage_run(
     Returns
     -------
     A shell-escaped command line suitable for direct execution.
+
     """
     if not isinstance(output, Path):
         output = Path(str(output))
@@ -216,7 +217,6 @@ def _confine_by_volume(
 # Extract function path
 def _get_full_name(node: ast.AST) -> str:
     """Get the name of the function being called, including the module path if it's an attribute access."""
-
     if isinstance(node, ast.Name):
         return node.id
     if isinstance(node, ast.Attribute):
@@ -251,8 +251,8 @@ def get_confinement_from_function(
     list[str]
         A list of remage confinement commands corresponding to the
         function definition.
-    """
 
+    """
     if "<...>" not in function_string:
         msg = "the function string must contain the placeholder <...> for the registry argument!"
         raise ValueError(msg)
@@ -314,6 +314,7 @@ def make_remage_macro(
         Simulation tier (e.g. "stp", "ver", ...). Default is "stp".
     geom
         Path to the geometry file.
+
     Returns
     -------
     A tuple with:
@@ -331,6 +332,7 @@ def make_remage_macro(
       :func:`.patterns.input_simjob_filename`.
     - If ``config.nersc.dvs_ro`` is set, the vertices file will be read from
       the read-only filesystem mount ``/dvs_ro`` at NERSC.
+
     """
     # get the config block for this tier/simid
     block = f"simprod.config.tier.{tier}.{config.experiment}.simconfig.{simid}"

@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ $# -ne 1 ]]; then
+    echo "Usage: $0 <path-to-production-cycle>" >&2
+    exit 1
+fi
+
+cycle="$(realpath "$1")"
+
+if [[ ! -d "$cycle/generated" ]]; then
+    echo "Error: '$cycle/generated' is not a directory" >&2
+    exit 1
+fi
+
+mkdir -p "$cycle/tarballs"
+
+output="$cycle/tarballs/$(basename "$cycle")-plots.tar.xz"
+echo "Archiving into $output..."
+
+cd "$cycle/generated"
+
+# shellcheck disable=SC2046
+tar --xz --verbose --create \
+    --file "$output" \
+    --transform "s|^\./||;s|^|$(basename "$cycle")-plots/|" \
+    $(find . -type d -name plots)
+
+echo "Done!"

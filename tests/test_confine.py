@@ -60,3 +60,38 @@ def test_get_lar_minishroud_confine_commands(test_generate_gdml):
         test_generate_gdml,
     )
     assert lines_eval_args == lines
+
+    # outer cylinder: valid outside confinement
+    lines_outer = confine.get_lar_minishroud_confine_commands(
+        test_generate_gdml,
+        inside=False,
+        outer_radius_in_mm=1000,
+        outer_height_in_mm=2000,
+    )
+    assert "/RMG/Generator/Confinement/Geometrical/AddSolid Cylinder" in lines_outer
+    assert (
+        "/RMG/Generator/Confinement/Geometrical/Cylinder/OuterRadius 1000 mm"
+        in lines_outer
+    )
+    assert (
+        "/RMG/Generator/Confinement/Geometrical/Cylinder/Height 2000 mm" in lines_outer
+    )
+
+    # outer cylinder: raises when inside=True
+    with pytest.raises(ValueError):
+        confine.get_lar_minishroud_confine_commands(
+            test_generate_gdml,
+            inside=True,
+            outer_radius_in_mm=1000,
+            outer_height_in_mm=2000,
+        )
+
+    # outer cylinder: raises when only one parameter is given
+    with pytest.raises(ValueError):
+        confine.get_lar_minishroud_confine_commands(
+            test_generate_gdml, inside=False, outer_radius_in_mm=1000
+        )
+    with pytest.raises(ValueError):
+        confine.get_lar_minishroud_confine_commands(
+            test_generate_gdml, inside=False, outer_height_in_mm=2000
+        )

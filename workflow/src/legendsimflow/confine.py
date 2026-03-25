@@ -15,11 +15,14 @@
 from __future__ import annotations
 
 import fnmatch
+from collections.abc import Iterable, Sequence
 
 import pyg4ometry
 
 
-def _get_matching_volumes(volume_list: list, patterns: str | list) -> list[str]:
+def _get_matching_volumes(
+    volume_list: Iterable[str], patterns: str | Sequence[str]
+) -> list[str]:
     """Return volumes from `volume_list` whose names match `patterns`.
 
     Wildcard patterns are supported via :func:`fnmatch.fnmatch`.
@@ -49,11 +52,13 @@ def _get_matching_volumes(volume_list: list, patterns: str | list) -> list[str]:
 
 def get_lar_minishroud_confine_commands(
     reg: pyg4ometry.geant4.Registry,
-    pattern: str = "minishroud_tube*",
+    pattern: str | Sequence[str] = "minishroud_tube*",
     inside: bool = True,
     lar_name: str = "liquid_argon",
+    outer_radius_in_mm: float | None = None,
+    outer_height_in_mm: float | None = None,
 ) -> list[str]:
-    """Extract the commands for the LAr confinement inside/ outside the NMS from the GDML.
+    """Extract the commands for the LAr confinement inside/outside the NMS from the GDML.
 
     Parameters
     ----------
@@ -66,6 +71,12 @@ def get_lar_minishroud_confine_commands(
         exclude the minishroud volumes from the generation region.
     lar_name
         The name of the physical volume of the LAr.
+    outer_radius_in_mm
+        If provided, gives an outer radius for the confinement. Only supported
+        for outside confinement (inside=False).
+    outer_height_in_mm
+        If provided, gives an outer height for the confinement. Only supported
+        for outside confinement (inside=False).
 
     Returns
     -------
@@ -88,6 +99,23 @@ def get_lar_minishroud_confine_commands(
         f"/RMG/Generator/Confinement/SamplingMode {mode}",
     ]
     lines += [f"/RMG/Generator/Confinement/Physical/AddVolume {lar_name}"]
+
+    if (outer_radius_in_mm is None) != (outer_height_in_mm is None):
+        msg = "outer_radius_in_mm and outer_height_in_mm must be provided together"
+        raise ValueError(msg)
+
+    if outer_radius_in_mm is not None and outer_height_in_mm is not None:
+        if inside:
+            msg = (
+                "outer_radius and outer_height parameters are only supported for "
+                f"outside confinement (inside=False), but inside={inside} was given."
+            )
+            raise ValueError(msg)
+        lines += [
+            "/RMG/Generator/Confinement/Geometrical/AddSolid Cylinder",
+            f"/RMG/Generator/Confinement/Geometrical/Cylinder/OuterRadius {outer_radius_in_mm} mm",
+            f"/RMG/Generator/Confinement/Geometrical/Cylinder/Height {outer_height_in_mm} mm",
+        ]
 
     for s in string_list:
         vol = reg.physicalVolumeDict[s]
@@ -113,10 +141,10 @@ def get_lar_minishroud_confine_commands(
         dz = outer_ms.pDz
 
         # type conversions from pyg4ometry types
-        if not isinstance(r_max, (float, int)):
+        if not isinstance(r_max, float | int):
             r_max = r_max.eval()
 
-        if not isinstance(dz, (float, int)):
+        if not isinstance(dz, float | int):
             dz = dz.eval()
 
         command = "AddSolid" if inside else "AddExcludedSolid"

@@ -158,6 +158,7 @@ def gen_list_of_hpges_valid_for_modeling(
     -------
     This function is expensive in terms of filesystem I/O! Do not call it
     multiple times or in hot loops.
+
     """
     timestamp = start_key(config, runid)
     metadata = config.metadata
@@ -256,6 +257,7 @@ def gen_list_of_all_usabilities(
     ----------
     config
         Simflow configuration object.
+
     """
     start = time.time()
 

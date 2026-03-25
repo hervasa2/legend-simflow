@@ -71,6 +71,7 @@ def lookup_currmod_fit_data(
         maximum number of waveforms to return.
     get_drift_time
         Read also drift time to select waveforms.
+
     Returns
     -------
     pairs
@@ -81,7 +82,6 @@ def lookup_currmod_fit_data(
     selected_dts
         drift-time values for the selected subset of events.
     """
-
     if max_waveforms < 1:
         msg = f"{max_waveforms} must be strictly greater than 0."
         raise ValueError(msg)
@@ -269,8 +269,8 @@ def fit_noise_gauss(
     Returns
     -------
         The minuit object holding the fit results.
-    """
 
+    """
     if fit_range is None:
         fit_range = (np.mean(data) - 5 * np.std(data), np.mean(data) + 5 * np.std(data))
 
@@ -303,7 +303,6 @@ def fit_noise_gauss(
 
 def plot_noise_waveforms(noise: ArrayLike, temp: ArrayLike, norm: float = 1) -> tuple:
     """Plot the waveforms with noise and the noise alone."""
-
     temp = norm * temp / np.max(temp)
 
     fig, axs = plt.subplots(2, 1, figsize=(6, 4), sharex=True)
@@ -336,12 +335,15 @@ def plot_gauss_fit(
     ----------
     data
         an array of the data to fit.
+    fit_result
+        the result of the Gaussian fit.
     bins
         The number of bins.
     fit_range
         The range to use for the fit, if `None` this is determined from the data as +/- 5 standard deviations round the mean.
     nominal_val
         The nominal mean to add as a line on the plot.
+
     """
     if fit_range is None:
         fit_range = (np.mean(data) - 5 * np.std(data), np.mean(data) + 5 * np.std(data))
@@ -402,6 +404,7 @@ def get_current_pulse(
         the name of the DSP output corresponding to the current pulse.
     align
         DSP value around which the pulses are aligned.
+
     """
     # HACK: importing this messes up pint registries
     from dspeed.vis import WaveformBrowser  # noqa: PLC0415
@@ -497,6 +500,8 @@ def get_noise_waveforms(
         to estimate the current pulse.
     dsp_output
         the name of the DSP output corresponding to the current pulse.
+    energy_var
+        the name of the energy variable to use for thresholding.
     threshold
         energy threshold to apply to select the noise waveforms
     maximum_number
@@ -628,8 +633,7 @@ def estimate_mean_aoe(popt: list, energy: float = 1593) -> float:
 def get_waveform_maxima(
     template: ArrayLike, noise_wfs: ArrayLike, *, norm: float = 1
 ) -> NDArray:
-    """Extract the maximum of each waveform based on combining the
-    `template` with each waveform in `noise_wfs`.
+    """Extract the maximum of each waveform based on combining the `template` with each waveform in `noise_wfs`.
 
     Note
     ----
@@ -643,6 +647,7 @@ def get_waveform_maxima(
         2D array of each noise waveform.
     norm
         The normalisation for the template.
+
     """
     # normalise the template
     template = norm * template / np.max(template)
@@ -658,7 +663,6 @@ def get_waveform_maxima(
 
 def lookup_file_paths(l200data: str, runid: str, hit_tier_name: str) -> AttrsDict:
     """Lookup the paths to the `hit` and `raw` files."""
-
     _, period, run, data_type = re.split(r"\W+", runid)
 
     if isinstance(l200data, str):
@@ -845,6 +849,7 @@ def lookup_energy_res_metadata(
     pars_db
         optional existing *non-lazy* instance of
         ``TextDB(".../path/to/prod/generated/par_{hit_tier_name}")``.
+
     """
     pars_file, chmap = _lookup_generated_pars_file(
         l200data,
@@ -909,6 +914,7 @@ def lookup_aoe_res_metadata(
     pars_db
         optional existing *non-lazy* instance of
         ``TextDB(".../path/to/prod/generated/par_{hit_tier_name}")``.
+
     """
     pars_file, chmap = _lookup_generated_pars_file(
         l200data,
@@ -976,6 +982,7 @@ def build_energy_res_func_dict(
         name of the hit tier. This is typically "hit" or "pht".
     energy_res_pars
         from :func:`lookup_energy_res_metadata`.
+
     """
     if energy_res_pars is None:
         energy_res_pars = lookup_energy_res_metadata(
@@ -1037,6 +1044,7 @@ def build_aoe_res_func_dict(
         name of the hit tier. This is typically "hit" or "pht".
     aoe_res_pars
         from :func:`lookup_aoe_res_metadata`.
+
     """
     if aoe_res_pars is None:
         aoe_res_pars = lookup_aoe_res_metadata(
@@ -1099,6 +1107,7 @@ def lookup_psd_cut_values(
     pars_db
         optional existing *non-lazy* instance of
         ``TextDB(".../path/to/prod/generated/par_{hit_tier_name}")``.
+
     """
     pars_file, chmap = _lookup_generated_pars_file(
         l200data,

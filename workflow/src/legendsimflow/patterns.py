@@ -40,7 +40,8 @@ from . import metadata as metautils
 def _expand(pattern: str | Path, keep_list: bool = False, **kwargs) -> str | Path:
     """Expand a path pattern with Snakemake wildcards.
 
-    Returning a scalar unless `keep_list` is set."""
+    Returning a scalar unless `keep_list` is set.
+    """
     # stringfy
     _str_pattern = pattern.as_posix() if isinstance(pattern, Path) else pattern
 

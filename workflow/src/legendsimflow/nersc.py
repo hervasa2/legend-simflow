@@ -37,6 +37,7 @@ def dvs_ro(
     ----
     `config` must contain a ``nersc`` key mapped to a dictionary containing a
     ``dvs_ro: True`` key.
+
     """
     if not config.nersc.dvs_ro:
         return path
@@ -61,9 +62,10 @@ def dvs_ro_snakemake(snakemake: Snakemake) -> Snakemake:
     -------
     This function mutates the input `snakemake` object in place.
 
-    See also
+    See Also
     --------
     dvs_ro
+
     """
     # is this a named list?
     if len(snakemake.input.keys()) != 0:
@@ -83,7 +85,7 @@ def dvs_ro_snakemake(snakemake: Snakemake) -> Snakemake:
 
 
 def is_scratch_enabled(config: SimflowConfig) -> bool:
-    """Is the scratch folder enabled in this workflow?"""
+    """Whether the scratch folder is enabled in this workflow."""
     field = config.nersc.scratch
 
     if isinstance(field, bool) and not field:

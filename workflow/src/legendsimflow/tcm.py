@@ -71,6 +71,7 @@ def merge_stp_n_opt_tcms(tcm_stp, tcm_opt, *, scintillator_uid):
     -------
     ak.Array
         Record array with the same length as `tcm_stp`.
+
     """
     stp_k = tcm_stp.table_key
 

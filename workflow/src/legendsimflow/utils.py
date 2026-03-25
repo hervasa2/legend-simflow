@@ -59,6 +59,7 @@ def _merge_defaults(user: dict, default: dict) -> dict:
     -------
     dict
         Merged configuration dictionary with user values taking precedence.
+
     """
     result = dict(default)
     for k, v in user.items():
@@ -92,6 +93,7 @@ def apply_path_defaults(paths: dict) -> None:
     paths
         The ``paths`` section of the Simflow configuration, with all values
         already converted to :class:`pathlib.Path` objects.
+
     """
     if "geom" not in paths:
         paths["geom"] = paths["pars"] / "geom"
@@ -122,6 +124,7 @@ def init_simflow_context(raw_config: dict, workflow=None) -> AttrsDict:
         Snakemake workflow instance. If None, occurrences of ``$_`` in the
         configuration will be replaced with the path to the current working
         directory.
+
     """
     if not raw_config:
         msg = "you must set a config file with --configfile"
@@ -191,6 +194,7 @@ def setup_logdir_link(config: SimflowConfig) -> None:
         Simflow configuration object.
     proctime
         Processing time identifier for the log directory.
+
     """
     logdir = Path(config.paths.log)
     logdir.mkdir(parents=True, exist_ok=True)
@@ -214,6 +218,7 @@ def lookup_dataflow_config(l200data: Path | str) -> AttrsDict:
     -------
     the dataflow configuration file as a dictionary with substitutions
     performed.
+
     """
     if not isinstance(l200data, Path):
         l200data = Path(l200data)
@@ -263,6 +268,7 @@ def init_generated_pars_db(
         database.
     lazy
         see :class:`~dbetto.textdb.TextDB`.
+
     """
     dataflow_config = lookup_dataflow_config(l200data)
     return TextDB(
@@ -279,8 +285,8 @@ def get_hit_tier_name(l200data: str) -> str:
     ----------
     l200data
         Path to the production cycle of l200 data.
-    """
 
+    """
     df_cfg = lookup_dataflow_config(l200data).paths
 
     # first check if pht exists
@@ -304,8 +310,8 @@ def get_evt_tier_name(l200data: str) -> str:
     ----------
     l200data
         Path to the production cycle of l200 data.
-    """
 
+    """
     df_cfg = lookup_dataflow_config(l200data).paths
 
     # first check if pet exists
@@ -343,6 +349,7 @@ def string_to_remage_seed(s: str, seed: int = 0) -> int:
         the string to encode.
     seed
         optional seed.
+
     """
     seed_bytes = seed.to_bytes(8, byteorder="big", signed=False)  # 0..2^64-1
     h = hashlib.sha256(seed_bytes + s.encode("utf-8")).digest()
@@ -385,6 +392,7 @@ def check_nans_leq(array: ArrayLike, name: str, less_than_frac: float = 0.1) -> 
         array name for exception message.
     less_than_frac
         raise exception if fraction of NaNs is above this threshold.
+
     """
     flat = ak.ravel(array)
     n_el = len(flat)
@@ -449,6 +457,7 @@ def get_dict_value(d: dict, field: str, default: Any | None = None) -> Any:
         Dot-separated path (e.g. ``"a.b.c"``).
     default
         Value returned if the field is not found. Defaults to ``None``.
+
     """
     _ptr = d
     try:

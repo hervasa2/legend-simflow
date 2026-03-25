@@ -32,7 +32,6 @@ log = logging.getLogger(__name__)
 
 def lookup_evt_files(l200data: str, runid: str, evt_tier_name: str) -> list[str | Path]:
     """Lookup the paths to the `evt` files."""
-
     _, period, run, data_type = re.split(r"\W+", runid)
 
     if isinstance(l200data, str):
@@ -70,12 +69,14 @@ def _process_spms_windows(
         E.g., `(-1000, 5000)` means output times will be in `[-1000, 5000]`.
     min_sep_ns
         Minimal separation between windows in nanoseconds.
+
     Returns
     -------
     npe
         Photoelectron counts extracted from the requested windows.
     t0
         Times relative to time_domain_ns extracted from the requested windows.
+
     """
     # Validate inputs to avoid infinite loops and invalid window definitions
     if time_domain_ns[1] <= time_domain_ns[0]:
@@ -177,6 +178,7 @@ def get_rc_library(
     time relative to the start of a window in the trace, per SiPM and per hit
     (makes sure that t0 are between bounds specified in `time_domain_ns`), and
     "rawid" the SiPM channel numbers.
+
     """
     perf_block, print_perf, _ = make_profiler()
 
@@ -365,6 +367,7 @@ def get_sipm_rc_data(
     ------
     ValueError
         If the SiPM UID is not found in the library.
+
     """
     if sipm == "all":
         npe = ak.flatten(rc_library.npe, axis=-1)

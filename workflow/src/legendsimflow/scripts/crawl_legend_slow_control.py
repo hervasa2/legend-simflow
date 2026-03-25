@@ -30,7 +30,7 @@ def round_step_5(x):
 
 
 def dict_diff(d1: dict, d2: dict) -> dict:
-    """return entries of d1 that differ from d2"""
+    """Return entries of d1 that differ from d2."""
     return {k: v for k, v in d1.items() if k not in d2 or d2[k] != v}
 
 

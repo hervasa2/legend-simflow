@@ -179,7 +179,12 @@ messages_control.disable = [
   "too-many-nested-blocks"
 ]
 
+[tool.pixi.tasks.precompile]
+cmd = "python -c 'from dspeed.processors import *; from lgdo.compression import *; import matplotlib; import pygama; import pygeomhpges; import pygeomoptics; import pygeomtools; import reboost; import remage; import revertex' && touch .pixi/precompile.stamp"
+outputs = [".pixi/precompile.stamp"]
+
 [tool.pixi.tasks]
+snakemake = { cmd = "snakemake", depends-on = ["precompile"] }
 test-python = { cmd = "pytest -vvv" }
 test-julia = { cmd = "julia workflow/src/legendsimflow/scripts/init-julia-env.jl && julia --project=workflow/src/LegendSimflow.jl -e 'using Pkg; Pkg.test()'" }
 test = { depends-on = ["test-python", "test-julia"] }

@@ -62,15 +62,6 @@ wildcard_constraints:
 onstart:
     utils.setup_logdir_link(config)
 
-    # make sure some packages are initialized before we begin to avoid race conditions
-    # https://numba.readthedocs.io/en/stable/developer/caching.html#cache-sharing
-    if not workflow.touch and "precompile_pkg" in config:
-        logger.info(
-            f"Pre-compiling Numba cache (NUMBA_CACHE_DIR={os.environ.get('NUMBA_CACHE_DIR')})"
-        )
-        for module in config.precompile_pkg:
-            shell(f"python -c 'from {module} import *'")
-
     logger.info("Starting workflow")
 
 

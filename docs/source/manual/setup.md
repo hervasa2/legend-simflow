@@ -82,10 +82,6 @@ Here's a basic description of its fields:
   - `tier` (dict, output): generated outputs for each tier, keyed by tier name
     (e.g. `tier.stp`, `tier.hit`, ...). Validation plots for each tier are
     stored in a `plots/` subdirectory (e.g. `tier.stp/plots/`).
-- `precompile_pkg`: list of Python module names that contain Numba-accelerated
-  routines. To avoid Numba precompilation race conditions, the Simflow
-  sequentially imports these modules to ensure that the Numba cache is populated
-  before workflow execution.
 - `runcmd`: command overrides
   - `remage`: remage command. Useful when not working in a Pixi environment and
     the `remage` command is not available.

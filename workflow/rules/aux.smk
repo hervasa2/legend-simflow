@@ -53,7 +53,10 @@ rule print_benchmark_stats:
 
     Can be run with `snakemake print_benchmark_stats`. This functionality is
     useful to tune the number of _remage_ primaries and jobs in the Simflow
-    configuration.
+    configuration. After printing the table, also writes an updated
+    ``generated/benchmarks/generated-simconfig.yaml`` with suggested
+    ``primaries_per_job`` and ``number_of_jobs`` values that can optionally
+    be swapped in place of the source ``simconfig.yaml``.
 
     :::{note}
     The runtime and the simulation speed are extracted from the event

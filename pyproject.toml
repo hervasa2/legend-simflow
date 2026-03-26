@@ -67,6 +67,7 @@ dependencies = [
     "pylegendmeta >=1.3.5",
     "reboost >=0.10.3,<0.11",
     "revertex >=0.1.2",
+    "ruamel.yaml",
     "snakemake >=9.18",
     "snakemake-storage-plugin-fs",
     "snakemake-executor-plugin-slurm",
@@ -205,6 +206,9 @@ matplotlib = "*"
 numpy = "*"
 pylegendmeta = ">=1.3.5,<1.4"
 psutil = "*"
+
+# benchmark stats
+ruamel.yaml = "*"
 
 # execution
 snakemake = ">=9.18,<10"

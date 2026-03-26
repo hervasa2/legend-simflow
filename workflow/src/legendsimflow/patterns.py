@@ -91,6 +91,16 @@ def plots_dirname(config: SimflowConfig, tier: str) -> Path:
     return config.paths.tier[tier] / "plots"
 
 
+def plots_tarball_filename(config: SimflowConfig) -> Path:
+    """The path to the plots archive tarball for the current production cycle.
+
+    The Simflow has no explicit knowledge of the production cycle name, so the
+    name of the directory where the Simflow lives is used as a proxy.
+    """
+    cycle_dir = config.paths.generated.parent
+    return cycle_dir / "tarballs" / (cycle_dir.name + "-plots.tar.xz")
+
+
 # geometry
 
 

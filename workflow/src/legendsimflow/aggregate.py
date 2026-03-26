@@ -122,6 +122,18 @@ def gen_list_of_all_plots_outputs(
     return mlist
 
 
+def gen_list_of_all_plots(config: SimflowConfig, **kwargs) -> list[Path]:
+    r"""Generate a list of all plot files across all active `make_steps`.
+
+    Extra keyword arguments (e.g. ``cache``) are forwarded to
+    :func:`gen_list_of_all_plots_outputs`.
+    """
+    files = []
+    for tier in config.make_steps:
+        files.extend(gen_list_of_all_plots_outputs(config, tier, **kwargs))
+    return files
+
+
 # drift time maps
 
 

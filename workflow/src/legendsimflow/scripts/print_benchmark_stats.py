@@ -24,15 +24,15 @@ from legendsimflow import nersc
 
 
 def round_down_2sf_5(x):
-    k = math.floor(math.log10(x))  # decade
-    m = x / 10**k  # mantissa in [1, 10)
+    k = math.floor(math.log10(x))
+    m = x / 10**k
 
-    m_rd = math.floor(m / 0.5) * 0.5  # steps: 1.0, 1.5, 2.0, 2.5, ...
+    m_rd = round(m / 0.5) * 0.5
     return m_rd * 10**k
 
 
 def printline(*line):
-    print("{:<52}{:>16}{:>27}{:>11}{:>23}{:>23}".format(*line))
+    print("{:<52}{:>16}{:>27}{:>11}{:>12}{:>23}{:>12}".format(*line))
 
 
 args = nersc.dvs_ro_snakemake(snakemake)  # noqa: F821
@@ -42,10 +42,6 @@ speed_pattern = re.compile(
     r"([0-9]+(?:\.[0-9]+)?)\s+seconds/event\s+=\s+"
     r"([0-9]+(?:\.[0-9]+)?)\s+events/second\s*$",
     re.MULTILINE,
-)
-
-nev_pattern = re.compile(
-    r"^.*Run nr\. \d+ completed\. (\d+) events simulated\.", re.MULTILINE
 )
 
 time_pattern = re.compile(
@@ -65,16 +61,18 @@ printline(
     "runtime [sec]",
     "speed (hot loop) [ev/sec]",
     "evts / 1h",
+    "...rounded",
     "jobs (1h) / 10^8 evts",
-    "primaries per 3.5 hrs",
+    "...rounded",
 )
 printline(
     "-----",
     "-------------",
     "-------------------------",
     "---------",
+    "----------",
     "---------------------",
-    "---------------------",
+    "----------",
 )
 
 for simd in sorted(logdir.glob("*/*")):
@@ -82,25 +80,23 @@ for simd in sorted(logdir.glob("*/*")):
     if simd.parent.name != "stp":
         continue
 
-    speed = 0
-    runtime = 0
+    speed = "..."
+    runtime = "..."
+    evts_1h = "..."
+    njobs = "..."
+    evts_1h_round = "..."
+    njobs_round = "..."
+
     for jobd in simd.glob("*.log"):
         with jobd.open("r", encoding="utf-8") as f:
-            # read the full file in memory (assuming it can't be huge)
             data = f.read()
 
             # extract events/sec for each thread
-            time = [
-                float(m.group(2)) for m in speed_pattern.finditer(data) if m is not None
-            ]
+            thread_speeds = [float(m.group(2)) for m in speed_pattern.finditer(data)]
 
-            # simulations might have crashed or still running
-            if time == []:
-                runtime = "..."
-                speed = "..."
-
-            # get the number of simulated events for each thread (it's always the same)
-            nev = int(nev_pattern.search(data).group(1))
+            # simulation might have crashed or still be running
+            if not thread_speeds:
+                break
 
             # get the runtime of each thread
             runtimes = [
@@ -110,18 +106,24 @@ for simd in sorted(logdir.glob("*/*")):
                 for d, h, mi, s in time_pattern.findall(data)
             ]
 
-            runtime = mean(runtimes)
-            speed += mean(time)
+            if not runtimes:
+                break
 
-    evts_1h = int(speed * 60 * 60) if speed > 0 else "..."
-    njobs = int(1e8 / evts_1h) if not isinstance(evts_1h, str) else 0
-    prims_per_job = round_down_2sf_5((speed * 60 * 60) * 3.5)  # primaries per 3.5 hours
+            runtime = mean(runtimes)
+            speed = mean(thread_speeds)
+
+            evts_1h = int(speed * 3600)
+            evts_1h_round = int(round_down_2sf_5(speed * 3600))
+            njobs = int(1e8 / evts_1h)
+            njobs_round = int(1e8 / evts_1h_round)
 
     printline(
         simd.parent.name + "." + simd.name,
-        ("!!! " if runtime < 10 else "") + f"{runtime:.1f}",
-        f"{speed:.2f}",
+        ("!!! " if isinstance(runtime, float) and runtime < 10 else "")
+        + (f"{runtime:.1f}" if isinstance(runtime, float) else runtime),
+        f"{speed:.2f}" if isinstance(speed, float) else speed,
         evts_1h,
+        evts_1h_round,
         njobs,
-        prims_per_job,
+        njobs_round,
     )

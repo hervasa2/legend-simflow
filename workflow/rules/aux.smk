@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from legendsimflow import aggregate, nersc
+from legendsimflow import aggregate, nersc, patterns
 
 
 def on_scratch_smk(path: str | Path):
@@ -102,4 +102,33 @@ rule cache_detector_usabilities:
         dbetto.utils.write_dict(
             aggregate.gen_list_of_all_usabilities(config).to_dict(),
             output[0],
+        )
+
+
+rule archive_plots:
+    """Archive all validation plots into a single tarball.
+
+    Can be run with ``snakemake archive_plots``. Collects all ``plots/``
+    subdirectories produced by the Simflow under the ``generated/`` directory
+    and packs them into ``tarballs/<cycle>-plots.tar.xz``, preserving the
+    directory tree structure.
+
+    No wildcards are used.
+    """
+    localrule: True
+    input:
+        aggregate.gen_list_of_all_plots(
+            config,
+            cache=SIMFLOW_CONTEXT.get("modelable_hpges"),
+        ),
+    output:
+        patterns.plots_tarball_filename(config),
+    run:
+        from pathlib import Path
+        from legendsimflow.archive import create_plots_tarball
+
+        create_plots_tarball(
+            generated_dir=config.paths.generated,
+            output=Path(output[0]),
+            prefix=Path(output[0]).name.removesuffix(".tar.xz"),
         )

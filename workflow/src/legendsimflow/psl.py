@@ -287,7 +287,7 @@ def make_realistic_pulse_shape_lib(
         - num_mw: The number of moving windows to use in the moving window
           average
         - mw_type: The type of moving window to apply (see
-          :func:`dspeed.processors.moving_window_multi` for details)
+          ``dspeed.processors.moving_window_multi`` for details)
     dt_data
         The time step of the original data waveforms (in ns), used to scale
         the derivative.

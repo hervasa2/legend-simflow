@@ -135,7 +135,7 @@ def fit_currmod(times_list: list[NDArray], current_list: list[NDArray]) -> tuple
     """Fit the model to multiple raw HPGe current pulses simultaneously.
 
     Normalises each waveform by its peak amplitude and uses
-    :func:`iminuit.Minuit` to minimise the summed RMS residual across all
+    :class:`iminuit.Minuit` to minimise the summed RMS residual across all
     waveforms simultaneously.  Fitting multiple waveforms provides a more
     robust estimate of the pulse-shape parameters than fitting a single event.
 

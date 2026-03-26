@@ -71,6 +71,7 @@ intersphinx_mapping = {
     "numpy": ("https://numpy.org/doc/stable", None),
     "awkward": ("https://awkward-array.org/doc/stable", None),
     "numba": ("https://numba.readthedocs.io/en/stable", None),
+    "matplotlib": ("https://matplotlib.org/stable", None),
     "pandas": ("https://pandas.pydata.org/docs", None),
     "scipy": ("https://docs.scipy.org/doc/scipy", None),
     "h5py": ("https://docs.h5py.org/en/stable", None),

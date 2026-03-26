@@ -20,6 +20,8 @@ import re
 from datetime import timedelta
 from statistics import mean
 
+from ruamel.yaml import YAML
+
 from legendsimflow import nersc
 
 
@@ -75,6 +77,8 @@ printline(
     "----------",
 )
 
+updates: dict[str, tuple[int, int]] = {}
+
 for simd in sorted(logdir.glob("*/*")):
     # this code works only for remage output
     if simd.parent.name != "stp":
@@ -127,3 +131,28 @@ for simd in sorted(logdir.glob("*/*")):
         njobs,
         njobs_round,
     )
+
+    if isinstance(evts_1h_round, int):
+        updates[simd.name] = evts_1h_round
+
+# generate updated simconfig.yaml
+simconfig_path = (
+    args.config.paths.config / "tier/stp" / args.config.experiment / "simconfig.yaml"
+)
+
+ryaml = YAML()
+ryaml.preserve_quotes = True
+with simconfig_path.open(encoding="utf-8") as f:
+    simconfig = ryaml.load(f)
+
+target_evts = int(1e7)
+for simid, evts_per_job in updates.items():
+    simconfig[simid]["primaries_per_job"] = evts_per_job
+    simconfig[simid]["number_of_jobs"] = max(1, math.ceil(target_evts / evts_per_job))
+
+out = args.config.paths.benchmarks / "generated-simconfig.yaml"
+out.parent.mkdir(parents=True, exist_ok=True)
+with out.open("w", encoding="utf-8") as f:
+    ryaml.dump(simconfig, f)
+
+print(f"\nGenerated simconfig (1h jobs, >={target_evts:.0e} total events): {out}")

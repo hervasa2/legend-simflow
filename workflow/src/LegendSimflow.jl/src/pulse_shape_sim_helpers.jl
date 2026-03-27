@@ -324,7 +324,7 @@ checks depletion voltage, and calculates weighting potential.
 """
 function setup_hpge_simulation(meta_path::String,
     meta::PropDict, xtal::PropDict,
-    opv_val::Real, T::Any, refinement_limits::AbstractVector; threshold::Real = 100)::Simulation
+    opv_val::Real, T::Any, refinement_limits::AbstractVector; threshold::Real = 200)::Simulation
 
     sim = Simulation{T}(LegendData, meta, xtal)
 

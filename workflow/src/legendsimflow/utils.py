@@ -33,6 +33,7 @@ import legenddataflowscripts as ldfs
 import lgdo
 import numpy as np
 from dbetto import AttrsDict, TextDB
+from git.exc import GitCommandError
 from legendmeta import LegendMetadata
 from numpy.typing import ArrayLike
 from reboost.hpge.psd import _current_pulse_model as current_pulse_model
@@ -160,7 +161,10 @@ def init_simflow_context(raw_config: dict, workflow=None) -> AttrsDict:
     metadata = LegendMetadata(config.paths.metadata, lazy=True)
 
     if "legend_metadata_version" in config:
-        metadata.checkout(config.legend_metadata_version)
+        try:
+            metadata.checkout(config.legend_metadata_version)
+        except GitCommandError as e:
+            log.warning("could not checkout legend-metadata version: %s", e)
 
     # NOTE: read only path on NERSC, we are not going to modify the db
     # NOTE: don't use lazy=True, we need a fully functional TextDB

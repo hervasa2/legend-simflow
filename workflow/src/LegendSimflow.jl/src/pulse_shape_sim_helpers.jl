@@ -318,13 +318,13 @@ checks depletion voltage, and calculates weighting potential.
 - `opv_val`: Operational voltage in V (Float32)
 - `T`: Floating-point precision type (typically Float32)
 - `refinement_limits`: Vector of refinement thresholds for SSD
--  `threshold`: Maximum allowed difference between simulated and measured depletion voltage (default: 100 V)
+-  `threshold`: Maximum allowed difference between simulated and measured depletion voltage (default: 200 V)
 # Returns
 - `sim`: Fully configured SolidStateDetectors Simulation object
 """
 function setup_hpge_simulation(meta_path::String,
     meta::PropDict, xtal::PropDict,
-    opv_val::Real, T::Any, refinement_limits::AbstractVector; threshold::Real = 100)::Simulation
+    opv_val::Real, T::Any, refinement_limits::AbstractVector; threshold::Real = 200)::Simulation
 
     sim = Simulation{T}(LegendData, meta, xtal)
 

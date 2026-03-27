@@ -296,6 +296,17 @@ def test_cvt_filenames(config):
     assert result.suffix == ".tsv"
 
 
+def test_plots_tarball_filename(config):
+    result = p.plots_tarball_filename(config)
+    assert isinstance(result, Path)
+    assert result.suffix == ".xz"
+    assert result.stem.endswith(".tar")
+    assert "plots" in result.name
+    # tarball must live inside generated/, not in the repo root
+    assert str(config.paths.generated) in str(result)
+    assert result.parent.name == "tarballs"
+
+
 def test_pdf_filenames(config):
     result = p.pdffile_rel_basename(simid=SIMID)
     assert isinstance(result, str)

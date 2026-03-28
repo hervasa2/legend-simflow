@@ -54,7 +54,7 @@ hpge_currmods_files = args.input.hpge_currmods
 # hpge_eresmods_files = args.input.hpge_eresmods
 # hpge_aoeresmods_files = args.input.hpge_aoeresmods
 # hpge_psdcuts_files = args.input.hpge_psdcuts
-simstat_part_file = args.input.simstat_part_file[0]
+simstat_part_file = args.input.simstat_part_file
 l200data = args.config.paths.l200data
 usabilities = AttrsDict(load_dict(args.input.detector_usabilities[0]))
 

@@ -443,8 +443,8 @@ function compute_ideal_pulse_shape_lib(
     radius = meta.geometry.radius_in_mm / 1000
     height = meta.geometry.height_in_mm / 1000
 
-    r_axis = build_simulation_grid_axis(radius, grid_size)
-    z_axis = build_simulation_grid_axis(height, grid_size)
+    r_axis = build_simulation_grid_axis(T(radius), T(grid_size))
+    z_axis = build_simulation_grid_axis(T(height), T(grid_size))
 
     spawn_positions, idx_spawn_positions = spawn_points_on_grid(r_axis, z_axis, angle_rad)
 
@@ -538,8 +538,8 @@ function compute_drift_time_map(
     radius = meta.geometry.radius_in_mm / 1000
     height = meta.geometry.height_in_mm / 1000
 
-    r_axis = build_simulation_grid_axis(radius, grid_step)
-    z_axis = build_simulation_grid_axis(height, grid_step)
+    r_axis = build_simulation_grid_axis(T(radius), T(grid_step))
+    z_axis = build_simulation_grid_axis(T(height), T(grid_step))
 
     # Build spawn positions grid
     spawn_positions, idx_spawn_positions = spawn_points_on_grid(r_axis, z_axis, angle_rad)

@@ -74,6 +74,9 @@ end
     sim = setup_hpge_simulation(meta_path, meta, xtal, opv, T, refinement_limits, threshold = 20000)
 
     @test isa(sim, Simulation{T})
+    @test isa(sim.detector.semiconductor.charge_drift_model, ADL2016ChargeDriftModel)
+    @test isa(sim.detector.semiconductor.charge_drift_model.temperaturemodel, PowerLawTemperatureModel)
+    @test sim.detector.semiconductor.charge_drift_model.temperaturemodel.reference_temperature == T(87)
 
     # test valid spawn pos
     # Candidate positions include one valid and one invalid
